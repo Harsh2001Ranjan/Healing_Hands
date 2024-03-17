@@ -9,10 +9,11 @@ const Homepage = () => {
         {},
         {
           headers: {
-            Authorization: "Bearer" + localStorage.getItem("token"),
+            Authorization: "Bearer " + localStorage.getItem("token"),
           },
         }
       );
+      console.log(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -21,12 +22,6 @@ const Homepage = () => {
   useEffect(() => {
     getUserData();
   }, []);
-
-  return (
-    <div>
-      <h1>Home page</h1>
-    </div>
-  );
 };
 
 export default Homepage;
