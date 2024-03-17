@@ -56,25 +56,25 @@ const loginController = async (req, res) => {
 
 const authController = async (req, res) => {
   try {
-    const user = await userModel.findOne({ _id: req.body.userId });
-    user.password = undefined;
+    const user = await userModel.findOne({ _id_: req.body.userId }); //findByID tha uski jagah findOne likha hai
+
     if (!user) {
       return res.status(200).send({
         message: "user not found",
         success: false,
       });
-    } else {
-      res.status(200).send({
-        success: true,
-        data: user,
-      });
     }
+    user.password = undefined;
+    res.status(200).send({
+      success: true,
+      data: user,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       message: "auth error",
       success: false,
-      error,
+      error: error.message,
     });
   }
 };
