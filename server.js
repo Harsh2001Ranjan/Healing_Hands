@@ -24,7 +24,7 @@ console.log(`PORT: ${process.env.PORT}`);
 // listening port
 app.listen(port, () => {
   console.log(
-    `Server is running on ${process.env.NODE_MODE} Mode on port ${process.env.PORT}`
-      .bgCyan.white
+    `Server is running on ${process.env.NODE_MODE} Mode on port ${port}`.bgCyan
+      .white
   );
 });

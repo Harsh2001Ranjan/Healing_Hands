@@ -1,6 +1,7 @@
 const userModel = require("../models/userModels");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const doctorModel = require("../models/doctorModel");
 //RegisterCallback
 const registerController = async (req, res) => {
   try {
@@ -28,7 +29,9 @@ const registerController = async (req, res) => {
 
 const loginController = async (req, res) => {
   try {
+    console.log(req.body.email);
     const user = await userModel.findOne({ email: req.body.email });
+    console.log(user);
     if (!user) {
       return res
         .status(200)
@@ -44,9 +47,11 @@ const loginController = async (req, res) => {
       expiresIn: "1d",
     });
 
+    // localStorage.setItem("token", token);
+
     res
       .status(200)
-      .send({ message: "Login Successfull", success: true, token });
+      .send({ message: "Login Successfull", success: true, token, user }); // Added extra response as user ....
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: `Error in login CTRL ${error.message}` });
@@ -82,7 +87,7 @@ const loginController = async (req, res) => {
 
 const authController = async (req, res) => {
   try {
-    const user = await userModel.findOne({ _id_: req.body.userId }); //findByID tha uski jagah findOne likha hai
+    const user = await userModel.findById({ _id: req.body.userId }); //findByID tha uski jagah findOne likha hai
 
     if (!user) {
       return res.status(200).send({
@@ -104,5 +109,40 @@ const authController = async (req, res) => {
     });
   }
 };
+//apply Doctor CTRL
+const applyDoctorController = async (req, res) => {
+  try {
+    const newDoctor = await doctorModel({ ...req.body, status: "pending" });
+    await newDoctor.save();
+    const adminUser = await userModel.findOne({ isAdmin: true });
+    const notification = adminUser.notification;
+    notification.push({
+      type: "apply-doctor-request",
+      message: `${newDoctor.firstName} ${newDoctor.lastName} Has Applied For A Doctor Account`,
+      data: {
+        doctorId: newDoctor._id,
+        name: newDoctor.firstName + " " + newDoctor.lastName,
+        onClickPath: "/admin/doctors",
+      },
+    });
+    await userModel.findByIdAndUpdate(adminUser._id, { notification });
+    res.status(201).send({
+      success: true,
+      message: "Doctor Account Applied Successfully ",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      error,
+      message: "Error While Applying For Doctor",
+    });
+  }
+};
 
-module.exports = { loginController, registerController, authController };
+module.exports = {
+  loginController,
+  registerController,
+  authController,
+  applyDoctorController,
+};

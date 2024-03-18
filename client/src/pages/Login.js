@@ -1,15 +1,27 @@
 import React from "react";
 import "../styles/RegisterStyles.css";
 import { Form, Input, message } from "antd";
+import { useDispatch } from "react-redux";
+import { showLoading, hideLoading } from "../redux/features/alertSlice";
 import { Link, useNavigate } from "react-router-dom";
+import { setUser } from "../redux/features/userSlice";
 import axios from "axios";
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   //Form handler
   const onFinishHandler = async (values) => {
+    console.log("hello");
     try {
+      dispatch(showLoading());
       const res = await axios.post("/api/v1/user/login", values);
+      const user = res.data.user; //extracteduser from response.............
+      console.log(res);
+      // window.location.reload(); // Changed to avoid hard reload...................
+      //done some changes here
+      dispatch(hideLoading());
       if (res.data.success) {
+        dispatch(setUser(user));
         localStorage.setItem("token", res.data.token);
         message.success("Login Successfull");
         navigate("/");
@@ -17,6 +29,7 @@ const Login = () => {
         message.error(res.data.message);
       }
     } catch (error) {
+      dispatch(hideLoading());
       console.log(error);
       message.error("Something went wrong");
     }
