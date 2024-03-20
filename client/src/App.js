@@ -7,7 +7,10 @@ import Spinner from "./components/Spinner";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 import ApplyDoctor from "./pages/ApplyDoctor";
-
+import NotificationPage from "./pages/NotificationPage";
+// import Doctors from "./pages/admin/Users"; Here is the error
+import Doctors from "./pages/admin/Doctors.js";
+import Users from "./pages/admin/Users.js";
 // import logo from './logo.svg';
 // import './App.css';
 
@@ -37,6 +40,51 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
+            {/* <Route
+              path="/admin/users"
+              element={
+                <ProtectedRoute>
+                  <Users />
+                </ProtectedRoute>
+              }
+            /> */}
+            {/* <Route
+              path="/admin/users"
+              element={
+                <ProtectedRoute>
+                  //Users sugg for importing is not shown and an error
+                  comes......
+                  <Users />
+                </ProtectedRoute>
+              }
+            /> */}
+            <Route
+              path="/admin/users"
+              element={
+                <ProtectedRoute>
+                  <Users />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/doctor"
+              element={
+                <ProtectedRoute>
+                  <Doctors />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/notification"
+              element={
+                <ProtectedRoute>
+                  <NotificationPage />
+                </ProtectedRoute>
+              }
+            />
+
             <Route
               path="/login"
               element={

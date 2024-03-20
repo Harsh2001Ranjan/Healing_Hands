@@ -16,7 +16,7 @@ const Login = () => {
       dispatch(showLoading());
       const res = await axios.post("/api/v1/user/login", values);
       const user = res.data.user; //extracteduser from response.............
-      console.log(res);
+      console.log(res.data);
       // window.location.reload(); // Changed to avoid hard reload...................
       //done some changes here
       dispatch(hideLoading());

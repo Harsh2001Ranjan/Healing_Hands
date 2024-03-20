@@ -30,14 +30,16 @@ const registerController = async (req, res) => {
 const loginController = async (req, res) => {
   try {
     console.log(req.body.email);
-    const user = await userModel.findOne({ email: req.body.email });
-    console.log(user);
+    const { email, password } = req.body;
+    const user = await userModel.findOne({ email });
+    // console.log(user);
     if (!user) {
       return res
         .status(200)
         .send({ message: "User not found", success: false });
     }
-    const isMatch = await bcrypt.compare(req.body.password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
+    console.log(isMatch);
     if (!isMatch) {
       return res
         .status(200)
@@ -86,19 +88,22 @@ const loginController = async (req, res) => {
 // };
 
 const authController = async (req, res) => {
+  // console.log(req.userId);
+  // res.status(200);
   try {
-    const user = await userModel.findById({ _id: req.body.userId }); //findByID tha uski jagah findOne likha hai
-
+    const user = await userModel.findById({ _id: req.userId }); //findByID tha uski jagah findOne likha hai
+    // console.log(user);
     if (!user) {
-      return res.status(200).send({
+      return res.status(400).send({
         message: "user not found",
         success: false,
       });
     }
-    user.password = undefined;
+    const { password, ...userWithoutPassword } = user.toObject();
+    // user.password = undefined;
     res.status(200).send({
       success: true,
-      data: user,
+      data: userWithoutPassword,
     });
   } catch (error) {
     console.log(error);
@@ -140,9 +145,60 @@ const applyDoctorController = async (req, res) => {
   }
 };
 
+// Creating notification controller...........
+const getAllNotificationController = async (req, res) => {
+  try {
+    const user = await userModel.findOne({ _id: req.body.userId });
+    const seennotification = user.seennotification;
+    const notification = user.notification;
+    seennotification.push(...notification);
+    user.notification = [];
+    // user.seennotification = notification;
+    const updatedUser = await user.save();
+    res.status(200).send({
+      success: true,
+      message: "All notification marked as read",
+      data: updatedUser,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: "Error in notification",
+      success: false,
+      error,
+    });
+  }
+};
+
+// delete notifications.....
+const deleteAllNotificationController = async (req, res) => {
+  try {
+    const user = await userModel.findOne({ _id: req.body.userId });
+    console.log(user);
+    user.notification = [];
+    user.seennotification = [];
+    const updateUser = await user.save();
+    updateUser.password = undefined;
+    res.status(200).send({
+      success: true,
+      message: "Notifications deleted successfully",
+      data: updateUser,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Unable to delete all notifications",
+      error,
+    });
+  }
+};
+
 module.exports = {
   loginController,
   registerController,
   authController,
   applyDoctorController,
+  getAllNotificationController,
+  deleteAllNotificationController,
 };
