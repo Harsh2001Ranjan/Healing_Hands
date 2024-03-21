@@ -71,7 +71,11 @@ const NotificationPage = () => {
       <Tabs>
         <Tabs.TabPane tab="UnRead" key={0}>
           <div className="d-flex justify-content-end">
-            <h4 className="p-2" onClick={handleMarskAllRead}>
+            <h4
+              className="p-2"
+              style={{ cursor: "pointer" }}
+              onClick={handleMarskAllRead}
+            >
               {" "}
               Mark All Read
             </h4>
