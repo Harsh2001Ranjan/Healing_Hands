@@ -1,4 +1,4 @@
-import { Layout } from "antd";
+import Layout from "./../../components/Layout";
 import React from "react";
 
 const Doctors = () => {
