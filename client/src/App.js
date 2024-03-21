@@ -11,6 +11,7 @@ import NotificationPage from "./pages/NotificationPage";
 // import Doctors from "./pages/admin/Users"; Here is the error
 import Doctors from "./pages/admin/Doctors.js";
 import Users from "./pages/admin/Users.js";
+import Profile from "./pages/admin/doctor/Profile.js";
 // import logo from './logo.svg';
 // import './App.css';
 
@@ -72,6 +73,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Doctors />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/doctor/profile/:id"
+              element={
+                <ProtectedRoute>
+                  <Profile />
                 </ProtectedRoute>
               }
             />
