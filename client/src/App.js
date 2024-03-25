@@ -12,6 +12,7 @@ import NotificationPage from "./pages/NotificationPage";
 import Doctors from "./pages/admin/Doctors.js";
 import Users from "./pages/admin/Users.js";
 import Profile from "./pages/admin/doctor/Profile.js";
+import BookingPage from "./pages/BookingPage.js";
 // import logo from './logo.svg';
 // import './App.css';
 
@@ -81,6 +82,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/doctor/book-appointment/:doctorId"
+              element={
+                <ProtectedRoute>
+                  <BookingPage />
                 </ProtectedRoute>
               }
             />
