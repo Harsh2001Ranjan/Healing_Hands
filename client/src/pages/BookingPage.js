@@ -10,6 +10,7 @@ import axios from "axios";
 import { DatePicker, TimePicker, message } from "antd";
 import { showLoading, hideLoading } from "../redux/features/alertSlice";
 import { useDispatch } from "react-redux";
+
 const BookingPage = () => {
   // const {user} = useSelector(state => state.user)
 
@@ -43,9 +44,13 @@ const BookingPage = () => {
       console.log(error);
     }
   };
-  //=========================Bookinf Function
+  //=========================Booking Function
   const handleBooking = async () => {
     try {
+      setisAvailable(true);
+      if (!date && !time) {
+        return alert("Date & Time Requires");
+      }
       dispatch(showLoading());
       const res = await axios.post(
         "/api/v1/user/book-appointment",
@@ -54,6 +59,7 @@ const BookingPage = () => {
           userId: user._id,
           date: date,
           userInfo: user,
+          doctorInfo: doctors,
           time: time,
         },
         {
@@ -65,6 +71,31 @@ const BookingPage = () => {
       dispatch(hideLoading());
       if (res.data.success) {
         message.success(res.data.message);
+      }
+    } catch (error) {
+      dispatch(hideLoading());
+      console.log(error);
+    }
+  };
+
+  const handleAvailability = async () => {
+    try {
+      dispatch(showLoading());
+      const res = await axios.post(
+        "/api/v1/user/booking-availbility",
+        { doctorId: params.doctorId, date, time },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      dispatch(hideLoading());
+      if (res.data.success) {
+        setisAvailable(true);
+        message.success(res.data.message);
+      } else {
+        message.error(res.data.message);
       }
     } catch (error) {
       dispatch(hideLoading());
@@ -94,21 +125,30 @@ const BookingPage = () => {
               <DatePicker
                 className="m-2"
                 format="DD-MM-YYYY"
-                onChange={(value) =>
-                  setDate(moment(value).format("DD-MM-YYYY"))
-                }
+                onChange={(value) => {
+                  // setisAvailable(false);
+                  setDate(moment(value).format("DD-MM-YYYY"));
+                }}
               />
               <TimePicker
                 className="m-2"
                 form="HH:mm"
-                onChange={(value) => setTime(moment(value).format("HH:mm"))}
+                onChange={(value) => {
+                  // setisAvailable(false);
+                  setTime(moment(value).format("HH:mm"));
+                }}
               />
-              <button className="btn btn-primary mt-2">
+              <button
+                className="btn btn-primary mt-2"
+                onClick={handleAvailability}
+              >
                 Check Availability
               </button>
+              {/* {!isAvailable && ( */}
               <button className="btn btn-dark mt-2" onClick={handleBooking}>
                 Book Now
               </button>
+              {/* )} */}
             </div>
           </div>
         )}
