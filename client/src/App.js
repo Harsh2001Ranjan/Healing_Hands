@@ -13,6 +13,7 @@ import Doctors from "./pages/admin/Doctors.js";
 import Users from "./pages/admin/Users.js";
 import Profile from "./pages/admin/doctor/Profile.js";
 import BookingPage from "./pages/BookingPage.js";
+import Appointments from "./pages/Appointments.js";
 // import logo from './logo.svg';
 // import './App.css';
 
@@ -117,6 +118,14 @@ function App() {
                 <PublicRoute>
                   <Register />
                 </PublicRoute>
+              }
+            />
+            <Route
+              path="/appointments"
+              element={
+                <ProtectedRoute>
+                  <Appointments />
+                </ProtectedRoute>
               }
             />
           </Routes>
